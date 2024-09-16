@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Microservice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .course-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-name {
+            color: #007bff;
+            margin-top: 0;
+        }
+
+        .course-details {
+            color: #666;
+        }
+
+        .course-footer {
+            margin-top: 10px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Course Microservice</h1>
+        <button id="getAllCourses">Get All Courses</button>
+        <button id="getAllInstructors">Get All Instructors</button>
+        <button id="getAllStudents">Get All Students</button>
+        <div id="courses"></div>
+    </div>
+
+   <script>
+        const getAllCoursesButton = document.getElementById('getAllCourses');
+        const getAllInstructorsButton = document.getElementById('getAllInstructors');
+        const getAllStudentsButton = document.getElementById('getAllStudents');
+        const coursesDiv = document.getElementById('courses');
+
+        // Replace this URL with the actual URL of your course microservice
+        const baseUrl = 'http://localhost:8080/api/courses';
+
+        getAllCoursesButton.addEventListener('click', () => {
+            fetch(baseUrl)
+                .then(response => response.json())
+                .then(courses => {
+                    coursesDiv.innerHTML = '';
+                    courses.forEach(course => {
+                        const courseCard = document.createElement('div');
+                        courseCard.classList.add('course-card');
+
+                        const courseName = document.createElement('h2');
+                        courseName.classList.add('course-name');
+                        courseName.textContent = course.name;
+                        courseCard.appendChild(courseName);
+
+                        const courseDetails = document.createElement('p');
+                        courseDetails.classList.add('course-details');
+                        courseDetails.textContent = `Duration: ${course.duration}, Category: ${course.category}, Rating: ${course.rating}, Capacity: ${course.capacity}`;
+                        courseCard.appendChild(courseDetails);
+
+                        const courseFooter = document.createElement('div');
+                        courseFooter.classList.add('course-footer');
+
+                        const instructorSpan = document.createElement('span');
+                        instructorSpan.textContent = `Instructor: ${course.instructor.name}`;
+                        courseFooter.appendChild(instructorSpan);
+
+                        const enrolledStudentsSpan = document.createElement('span');
+                        enrolledStudentsSpan.textContent = `Enrolled Students: ${course.enrolledStudents.length}`;
+                        courseFooter.appendChild(enrolledStudentsSpan);
+
+                        courseCard.appendChild(courseFooter);
+                        coursesDiv.appendChild(courseCard);
+                    });
+                });
+        });
+
+        getAllInstructorsButton.addEventListener('click', () => {
+            fetch(`${baseUrl}/instructors`)
+                .then(response => response.json())
+                .then(instructors => {
+                    coursesDiv.innerHTML = '';
+                    instructors.forEach(instructor => {
+                        const instructorCard = document.createElement('div');
+                        instructorCard.classList.add('course-card');
+
+                        const instructorName = document.createElement('h2');
+                        instructorName.classList.add('course-name');
+                        instructorName.textContent = instructor.name;
+                        instructorCard.appendChild(instructorName);
+
+                        const instructorDetails = document.createElement('p');
+                        instructorDetails.classList.add('course-details');
+                        instructorDetails.textContent = `Email: ${instructor.email}, Affiliation: ${instructor.affiliation}, Bio: ${instructor.bio}`;
+                        instructorCard.appendChild(instructorDetails);
+
+                        coursesDiv.appendChild(instructorCard);
+                    });
+                });
+        });
+
+        getAllStudentsButton.addEventListener('click', () => {
+            fetch(`${baseUrl}/students`)
+                .then(response => response.json())
+                .then(students => {
+                    coursesDiv.innerHTML = '';
+                });
+        });
+    </script>
+</body>
+</html>
+                
